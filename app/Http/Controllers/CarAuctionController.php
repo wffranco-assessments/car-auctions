@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\CarAuction\BudgetHelper;
 use App\Helpers\CarAuctionHelper;
 use App\Http\Requests\CarAuctionRequest;
 use Illuminate\Http\Request;
@@ -12,10 +13,6 @@ class CarAuctionController extends Controller
     {
         $budget = +$request->budget;
 
-        $amount = CarAuctionHelper::calculateAmountFromBudget($budget);
-
-        $auction = new CarAuctionHelper($amount);
-
-        return compact('budget') + $auction->toArray();
+        return new BudgetHelper($budget);
     }
 }
