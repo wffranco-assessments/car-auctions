@@ -29,13 +29,21 @@ class BudgetHelper extends AmountHelper
     }
 
     /**
+     * Add main fees (basic fee and fixed fee)
+     */
+    protected static function addMainFees(float $amount): float
+    {
+        return round($amount + static::calculateBasicFee($amount) + static::calculateFixedFee($amount), 2);
+    }
+
+    /**
      * Calculate amount from budget
      */
     protected static function calculateAmountFromBudget(float|int $budget): float
     {
         $budget = round($budget, 2);
 
-        if ($budget < static::addBasicAndFixedFee(0.01) + static::STORAGE_FEE) return 0;
+        if ($budget < static::addMainFees(0.01) + static::STORAGE_FEE) return 0;
 
         $amount = static::reverseStorageFee($budget); # Substract storage fee
 
@@ -51,19 +59,19 @@ class BudgetHelper extends AmountHelper
      */
     protected static function reverseAssociationFee(float $amount): float
     {
-        if ($amount > static::addBasicAndFixedFee(3000) + 20) {
+        if ($amount > static::addMainFees(3000) + 20) {
             return round($amount - 20, 2);
         }
-        if ($amount > static::addBasicAndFixedFee(1000) + 15) {
-            return min(round($amount - 15, 2), static::addBasicAndFixedFee(3000));
+        if ($amount > static::addMainFees(1000) + 15) {
+            return min(round($amount - 15, 2), static::addMainFees(3000));
         }
-        if ($amount > static::addBasicAndFixedFee(500) + 10) {
-            return min(round($amount - 10, 2), static::addBasicAndFixedFee(1000));
+        if ($amount > static::addMainFees(500) + 10) {
+            return min(round($amount - 10, 2), static::addMainFees(1000));
         }
-        if ($amount >= static::addBasicAndFixedFee(1) + 5) {
-            return min(round($amount - 5, 2), static::addBasicAndFixedFee(500));
+        if ($amount >= static::addMainFees(1) + 5) {
+            return min(round($amount - 5, 2), static::addMainFees(500));
         }
-        return min(round($amount, 2), static::addBasicAndFixedFee(0.99));
+        return min(round($amount, 2), static::addMainFees(0.99));
     }
 
     /**
@@ -85,7 +93,7 @@ class BudgetHelper extends AmountHelper
      */
     protected static function reverseStorageFee(float $amount): float
     {
-        if ($amount < static::addBasicAndFixedFee(0.01) + static::STORAGE_FEE) return round($amount, 2);
+        if ($amount < static::addMainFees(0.01) + static::STORAGE_FEE) return round($amount, 2);
         return round($amount - static::STORAGE_FEE, 2);
     }
 }

@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 
 /**
  * This class allow us to calculate auction fees for cars,
- * using the bid amount or the max amount to bid calculated from the final budget.
+ * using the bid amount.
  *
  * All values are rounded to 2 decimals.
  *
@@ -97,11 +97,6 @@ class AmountHelper implements Arrayable
     protected static function addFixedFee(float $value): float
     {
         return round($value + static::calculateFixedFee($value), 2);
-    }
-
-    protected static function addBasicAndFixedFee(float $value): float
-    {
-        return static::addBasicFee(static::addFixedFee($value));
     }
 
     /**
